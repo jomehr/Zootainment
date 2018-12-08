@@ -84,11 +84,11 @@ class Register : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when(v.id) {
-            R.id.register_registerButton -> createAccount(
-                register_emailEdit.text.toString(),
-                register_passwordEdit.text.toString()
-            )
-            R.id.register_signIn -> startActivity(Intent(this, Login::class.java))
+            R.id.register_registerButton -> createAccount(register_emailEdit.text.toString(), register_passwordEdit.text.toString())
+            R.id.register_signIn -> {
+                startActivity(Intent(this, Login::class.java))
+                finish()
+            }
         }
     }
 

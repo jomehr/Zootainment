@@ -31,7 +31,7 @@ class Login : AppCompatActivity(), View.OnClickListener {
         super.onStart()
         // Check if user is signed in (non-null)
         if (auth.currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this@Login, MainActivity::class.java))
             finish()
         }
     }
@@ -42,7 +42,7 @@ class Login : AppCompatActivity(), View.OnClickListener {
                 if (task.isSuccessful) {
                     // Sign in success, load MainActivity
                     Log.d(TAG, "signInAnonymously:success")
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this@Login, MainActivity::class.java))
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.
@@ -64,7 +64,7 @@ class Login : AppCompatActivity(), View.OnClickListener {
                 if (task.isSuccessful) {
                     // Sign in success, load MainActivity
                     Log.d(TAG, "signInWithEmail:success")
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this@Login, MainActivity::class.java))
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.
@@ -102,8 +102,10 @@ class Login : AppCompatActivity(), View.OnClickListener {
         when (v.id) {
             R.id.login_anonButton -> signInAnonymously()
             R.id.login_loginButton -> signIn(login_emailEdit.text.toString(), login_passwordEdit.text.toString())
-            R.id.login_register -> startActivity(Intent(this, Register::class.java))
-
+            R.id.login_register -> {
+                startActivity(Intent(this@Login, Register::class.java))
+                finish()
+            }
         }
     }
 
