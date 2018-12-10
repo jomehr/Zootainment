@@ -3,6 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="Link">#0645AD</color>
+    <color name="link">#0645AD</color>
     <color name="black">#000000</color>
+
+    <color name="elephant">#828282</color>
+    <color name="giraffe">#beb446</color>
+    <color name="zebra">#d6d6d6</color>
+    <color name="monkey">#8c643c</color>
+
+    <color name="defaultContentBackground">#A0A9AC</color>
 </resources>

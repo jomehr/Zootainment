@@ -6,27 +6,31 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.widget.GridView
+import com.estimote.mustard.rx_goodness.rx_requirements_wizard.RequirementsWizardFactory
+import com.example.jan.zootainment.adapter.ProximityContentAdapter
+import com.example.jan.zootainment.data.ProximityContent
+import com.example.jan.zootainment.util.ProximityContentManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var database: DatabaseReference
+    private var proximityContentManager: ProximityContentManager? = null
+    private var proximityContentAdapter: ProximityContentAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        database = FirebaseDatabase.getInstance().reference
+        proximityContentAdapter = ProximityContentAdapter(this)
+        val gridView = findViewById<GridView>(R.id.gridView)
+        gridView.adapter = proximityContentAdapter
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -34,31 +38,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        action_moveLeft.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> database.child("cannon_actions").child("movement_left").setValue(true)
-                MotionEvent.ACTION_UP -> database.child("cannon_actions").child("movement_left").setValue(false)
-            }
-            true
-        }
-
-        action_moveRight.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> database.child("cannon_actions").child("movement_right").setValue(true)
-                MotionEvent.ACTION_UP -> database.child("cannon_actions").child("movement_right").setValue(false)
-            }
-            true
-        }
-
-        action_shoot.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> database.child("cannon_actions").child("shoot").setValue(true)
-                MotionEvent.ACTION_UP -> database.child("cannon_actions").child("shoot").setValue(false)
-            }
-            true
-        }
+        RequirementsWizardFactory
+            .createEstimoteRequirementsWizard()
+            .fulfillRequirements(this,
+                {
+                    Log.d(TAG, "requirements fulfilled")
+                    startProximityContentManager()
+                },
+                { requirements ->
+                    Log.e(TAG, "requirements missing: " + requirements)
+                }
+                , { throwable ->
+                    Log.e(TAG, "requirements error: " + throwable)
+                })
 
         nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    private fun startProximityContentManager() {
+        proximityContentManager = ProximityContentManager(this)
+        proximityContentManager?.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "destroying...")
+        proximityContentManager?.stop()
     }
 
     override fun onBackPressed() {
@@ -78,13 +83,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here.
         return when (item.itemId) {
+            R.id.dev_cannonControl -> {
+                startActivity(Intent(this@MainActivity, Controller::class.java))
+                true
+            }
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
+        // Handle navigation drawer item clicks here.
         when (item.itemId) {
             R.id.nav_profile -> {
 
@@ -113,5 +122,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun setNearbyContent(nearbyContent: List<ProximityContent>) {
+        Log.d(TAG, "setting Content: $nearbyContent")
+        proximityContentAdapter?.setNearbyContent(nearbyContent)
+        proximityContentAdapter?.notifyDataSetChanged()
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }
