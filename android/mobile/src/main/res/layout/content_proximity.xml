@@ -1,61 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"
-        android:padding="20dp">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/defaultContentBackground"
+    android:padding="20dp">
 
     <ImageView
-            android:id="@+id/proximity_animal"
-            android:layout_width="130dp"
-            android:layout_height="190dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/animal_default"
-            android:contentDescription="image of animal"/>
+        android:id="@+id/proximity_animal"
+        android:layout_width="130dp"
+        android:layout_height="190dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/animal_default"
+        android:contentDescription="image of animal" />
 
     <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/proximity_animal"
-            app:layout_constraintStart_toEndOf="@+id/proximity_animal"
-            app:layout_constraintTop_toTopOf="@+id/proximity_animal">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/proximity_animal"
+        app:layout_constraintStart_toEndOf="@+id/proximity_animal"
+        app:layout_constraintTop_toTopOf="@+id/proximity_animal">
 
         <TextView
-                android:id="@+id/proximity_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="animal"
-                android:textColor="@android:color/black"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+            android:id="@+id/proximity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="animal"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/proximity_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="questions: "
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/proximity_var"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-            <TextView
-                    android:id="@+id/proximity_subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="questions: "
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp" />
-
-            <TextView
-                    android:id="@+id/proximity_var"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="x"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp"/>
+                tools:text="x"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
         </LinearLayout>
 
     </LinearLayout>

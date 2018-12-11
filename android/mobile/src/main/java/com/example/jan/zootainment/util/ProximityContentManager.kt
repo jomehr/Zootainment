@@ -1,12 +1,14 @@
 package com.example.jan.zootainment.util
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.estimote.proximity_sdk.api.ProximityObserver
 import com.estimote.proximity_sdk.api.ProximityObserverBuilder
 import com.estimote.proximity_sdk.api.ProximityZoneBuilder
 import com.example.jan.zootainment.MainActivity
 import com.example.jan.zootainment.MyApplication
+import com.example.jan.zootainment.QuizIntro
 import com.example.jan.zootainment.data.ProximityContent
 
 class ProximityContentManager(private val context: Context) {
@@ -23,7 +25,7 @@ class ProximityContentManager(private val context: Context) {
             .withBalancedPowerMode()
             .build()
 
-        val zone = ProximityZoneBuilder()
+        val observer = ProximityZoneBuilder()
             .forTag("zootainment-6gm")
             .inFarRange()
             .onContextChange { contexts ->
@@ -41,7 +43,19 @@ class ProximityContentManager(private val context: Context) {
             }
             .build()
 
-        proximityObserverHandler = proximityObserver.startObserving(zone)
+        val animal = ProximityZoneBuilder()
+            .forTag("zootainment-6gm")
+            .inNearRange()
+            .onEnter { contexts ->
+                Log.d(TAG, "on enter: ${contexts.attachments["animal"]}")
+                val intent = Intent(context as MainActivity, QuizIntro::class.java)
+                intent.putExtra("animal", contexts.attachments["animal"] ?: "unknown")
+                context.startActivity(intent)
+                stop()
+            }
+            .build()
+
+        proximityObserverHandler = proximityObserver.startObserving(observer, animal)
     }
 
     fun stop() {

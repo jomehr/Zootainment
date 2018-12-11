@@ -44,12 +44,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 {
                     Log.d(TAG, "requirements fulfilled")
                     startProximityContentManager()
+
                 },
                 { requirements ->
-                    Log.e(TAG, "requirements missing: " + requirements)
+                    Log.e(TAG, "requirements missing: $requirements")
                 }
                 , { throwable ->
-                    Log.e(TAG, "requirements error: " + throwable)
+                    Log.e(TAG, "requirements error: $throwable")
                 })
 
         nav_view.setNavigationItemSelectedListener(this)
@@ -58,6 +59,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun startProximityContentManager() {
         proximityContentManager = ProximityContentManager(this)
         proximityContentManager?.start()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (proximityContentManager == null) {
+            startProximityContentManager()
+        }
     }
 
     override fun onDestroy() {
