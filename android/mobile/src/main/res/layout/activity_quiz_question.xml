@@ -26,7 +26,7 @@
         android:id="@+id/question_pb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:indeterminate="false"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -43,6 +43,7 @@
         android:layout_marginStart="50dp"
         android:background="@android:color/white"
         android:text="1"
+        android:tag="1"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/question_pb" />
@@ -57,6 +58,7 @@
         android:layout_marginEnd="50dp"
         android:background="@android:color/white"
         android:text="2"
+        android:tag="2"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/question_pb" />
@@ -71,6 +73,7 @@
         android:layout_marginEnd="50dp"
         android:background="@android:color/white"
         android:text="4"
+        android:tag="4"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/answer2" />
@@ -85,6 +88,7 @@
         android:layout_marginStart="50dp"
         android:background="@android:color/white"
         android:text="3"
+        android:tag="3"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/answer1" />
