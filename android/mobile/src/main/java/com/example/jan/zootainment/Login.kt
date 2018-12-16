@@ -31,6 +31,7 @@ class Login : AppCompatActivity(), View.OnClickListener {
         super.onStart()
         // Check if user is signed in (non-null)
         if (auth.currentUser != null) {
+            Log.d(TAG, "user is anonymous: ${auth.currentUser?.uid}")
             startActivity(Intent(this@Login, MainActivity::class.java))
             finish()
         }
@@ -103,7 +104,7 @@ class Login : AppCompatActivity(), View.OnClickListener {
             R.id.login_anonButton -> signInAnonymously()
             R.id.login_loginButton -> signIn(login_emailEdit.text.toString(), login_passwordEdit.text.toString())
             R.id.login_register -> {
-                startActivity(Intent(this@Login, Register::class.java))
+                startActivity(Intent(this@Login, Registration::class.java))
                 finish()
             }
         }

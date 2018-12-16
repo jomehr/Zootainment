@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -23,10 +24,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var proximityContentManager: ProximityContentManager? = null
     private var proximityContentAdapter: ProximityContentAdapter? = null
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        auth = FirebaseAuth.getInstance()
 
         proximityContentAdapter = ProximityContentAdapter(this)
         val gridView = findViewById<GridView>(R.id.gridView)
@@ -63,14 +68,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onStart() {
         super.onStart()
+        Log.d(TAG, "onStart: ")
         if (proximityContentManager == null) {
+            Log.d(TAG, "onStart: starting proximityContentManager")
             startProximityContentManager()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "destroying...")
+        Log.d(TAG, "onDestroy: stopping proximityContentManager")
         proximityContentManager?.stop()
     }
 
@@ -113,14 +120,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_logout -> {
-                val auth: FirebaseAuth = FirebaseAuth.getInstance()
                 //check if user is anonymous, if true ask to upgrade account to save data
                 if (auth.currentUser?.isAnonymous!!) {
-                    //TODO ask to upgrade to permanent account//show warning of data loss otherwise
-                    auth.currentUser?.delete()
-                    startActivity(Intent(this@MainActivity, Login::class.java))
-                    finish()
+                    Log.d(TAG, "user is anonymous: ${auth.currentUser?.uid}")
+                    convertAnonAccount()
                 }else {
+                    Log.d(TAG, "user is not anon")
                     auth.signOut()
                     startActivity(Intent(this@MainActivity, Login::class.java))
                     finish()
@@ -132,8 +137,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    private fun convertAnonAccount(): Boolean {
+         AlertDialog.Builder(this@MainActivity)
+            .setTitle("Warning")
+            .setMessage("If you log out as an anonymous Account you will lose all data (progress, vouchers, etc). Do you want to convert to a permanent account?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") {dialog, id ->
+                startActivity(Intent(this@MainActivity, Registration::class.java))
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, id ->
+                auth.currentUser!!.delete().addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "deleteAnon:success")
+                        dialog.cancel()
+                        startActivity(Intent(this@MainActivity, Login::class.java))
+                        finish()
+                    } else {
+                        Log.w(TAG, "deleteAnon:failure: ${task.exception}")
+                        dialog.cancel()
+                    }
+                }
+            }
+            .show()
+        return true
+    }
+
     fun setNearbyContent(nearbyContent: List<ProximityContent>) {
-        Log.d(TAG, "setting Content: $nearbyContent")
         proximityContentAdapter?.setNearbyContent(nearbyContent)
         proximityContentAdapter?.notifyDataSetChanged()
     }

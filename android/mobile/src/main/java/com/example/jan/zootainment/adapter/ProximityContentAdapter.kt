@@ -1,12 +1,15 @@
 package com.example.jan.zootainment.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.jan.zootainment.MainActivity
+import com.example.jan.zootainment.QuizIntro
 import com.example.jan.zootainment.R
 import com.example.jan.zootainment.data.ProximityContent
 import com.example.jan.zootainment.util.ProximityContentUtils
@@ -40,6 +43,11 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         image.setImageResource(ProximityContentUtils.getDrawable(content.title))
 
         convertView.setBackgroundColor(ProximityContentUtils.getColor(content.title))
+
+        convertView.setOnClickListener {
+            val intent = Intent(context as MainActivity, QuizIntro::class.java)
+            intent.putExtra("animal", content.title)
+            context.startActivity(intent) }
 
         return convertView
     }
