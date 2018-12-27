@@ -1,97 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/question_bg"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/defaultContentBackground">
-
-    <TextView
-        android:id="@+id/question"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:background="@color/white"
-        android:text="How many animals are in this cage?"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/question_pb"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="false"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/question"/>
-
-    <TextView
-        android:id="@+id/answer1"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:textColor="@android:color/black"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="50dp"
-        android:background="@android:color/white"
-        android:text="1"
-        android:tag="1"
-        android:gravity="center"
+        android:indeterminate="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question_pb" />
-
-    <TextView
-        android:id="@+id/answer2"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:textColor="@android:color/black"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="50dp"
-        android:background="@android:color/white"
-        android:text="2"
-        android:tag="2"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question_pb" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
-        android:id="@+id/answer4"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:textColor="@android:color/black"
-        android:textSize="30sp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="50dp"
-        android:background="@android:color/white"
-        android:text="4"
-        android:tag="4"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer2" />
+    <LinearLayout
+        android:id="@+id/question_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/answer3"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:textColor="@android:color/black"
-        android:textSize="30sp"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="50dp"
-        android:background="@android:color/white"
-        android:text="3"
-        android:tag="3"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer1" />
+        <TextView
+            android:id="@+id/question_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="2dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
 
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
+        <ProgressBar
+            android:id="@+id/question_pb_timer"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="@android:color/holo_red_dark"
+            android:progress="20"
+            android:background="@color/colorPrimary" />
+
+        <include
+            layout="@layout/content_answers_list"/>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

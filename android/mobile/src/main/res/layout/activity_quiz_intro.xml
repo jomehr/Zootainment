@@ -11,7 +11,7 @@
         android:id="@+id/quiz_introText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You are about to start a quiz. \n\nMake sure to read the information signs before you start! \n\nYou have 45 seconds to answer each question."
+        android:text="You are about to start a quiz. Make sure to read the information signs before you start! You have 45 seconds to answer each question."
         android:textSize="22sp"
         android:textColor="@color/black"
         android:gravity="start"

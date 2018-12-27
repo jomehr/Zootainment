@@ -17,11 +17,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/login_anonButton"
         android:text="Log in anonymously"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:background="@color/colorPrimary"
         android:padding="10dp"
@@ -75,6 +75,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/login_loginButton"
         android:text="Log in"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:background="@color/colorPrimary"
         android:padding="10dp"

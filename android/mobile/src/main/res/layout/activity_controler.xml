@@ -23,33 +23,34 @@
         android:id="@+id/action_shoot"
         android:layout_width="125dp"
         android:layout_height="100dp"
-        android:text="Shoot!"
+        android:text="feed!"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:background="@color/colorAccent"
+        android:background="@drawable/shape_round"
+        android:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/action_moveLeft"
-        android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_arrow_left"
-        android:background="@color/colorPrimary"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:background="@drawable/ic_arrow_left"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:layout_marginStart="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="move left" />
 
-    <ImageButton
+    <Button
         android:id="@+id/action_moveRight"
-        android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_arrow_right"
-        android:background="@color/colorPrimary"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:background="@drawable/ic_arrow_right"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:layout_marginEnd="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

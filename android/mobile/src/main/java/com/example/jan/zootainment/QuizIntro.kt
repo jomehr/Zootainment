@@ -2,6 +2,7 @@ package com.example.jan.zootainment
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import com.example.jan.zootainment.util.ProximityContentUtils
 import kotlinx.android.synthetic.main.activity_quiz_intro.*
@@ -13,7 +14,7 @@ class QuizIntro : AppCompatActivity() {
         setContentView(R.layout.activity_quiz_intro)
 
         val animal: String = intent.getStringExtra("animal")
-        quiz_introBackground.setBackgroundColor(ProximityContentUtils.getColor(animal))
+        quiz_introBackground.setBackgroundColor(ContextCompat.getColor(this, ProximityContentUtils.getColor(animal)))
 
         quiz_introReady.setOnClickListener{
             loadQuestion(animal)

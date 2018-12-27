@@ -2,6 +2,7 @@ package com.example.jan.zootainment.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +23,8 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         this.nearbyContent = nearbyContent
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
+    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+        var convertView = view
         if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -42,7 +43,7 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         questions.text = content.questions
         image.setImageResource(ProximityContentUtils.getDrawable(content.title))
 
-        convertView.setBackgroundColor(ProximityContentUtils.getColor(content.title))
+        convertView.setBackgroundColor(ContextCompat.getColor(context, ProximityContentUtils.getColor(content.title)))
 
         convertView.setOnClickListener {
             val intent = Intent(context as MainActivity, QuizIntro::class.java)
