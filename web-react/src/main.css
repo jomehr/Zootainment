@@ -1,0 +1,60 @@
+.container {
+    padding: 0;
+    margin: 5px;
+    border: 1px solid black;
+}
+.h1-title {
+    text-align: center;
+    color: green;
+}
+.paragraph-text {
+    padding: 0 20px;
+    text-align: center;
+}
+
+.controller {
+    text-align: center;
+    border: 1px solid black;
+    margin: 5px;
+}
+.left {
+}
+.right {
+
+}
+.shoot {
+    display: inline-block;
+    width: 25%;
+    max-width: 150px;
+    height: 50px;
+    color: white;
+    background: green;
+    margin: 10px 5px;
+    padding: 10px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: darkgreen;
+}
+li {
+    float: left;
+    border-right:1px solid #bbb;
+}
+li a{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 10px 10px;
+    text-decoration: none;
+}
+a:active {
+    text-decoration: underline;
+    background-color: green;
+}
+a:hover:not(:active) {
+    text-decoration: underline;
+}
