@@ -36,7 +36,7 @@
 ul {
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 2px;
     overflow: hidden;
     background-color: darkgreen;
 }
@@ -45,16 +45,17 @@ li {
     border-right:1px solid #bbb;
 }
 li a{
+    font-size: 20px;
     display: block;
     color: white;
     text-align: center;
     padding: 10px 10px;
     text-decoration: none;
 }
-a:active {
+li :active {
     text-decoration: underline;
     background-color: green;
 }
-a:hover:not(:active) {
+li :hover:not(:active) {
     text-decoration: underline;
 }

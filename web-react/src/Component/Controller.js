@@ -1,19 +1,21 @@
 import React from "react"
-import "../main.css"
 
-import firebase from "firebase"
+import {withFirebase} from "./Firebase"
 
-// Initialize Firebase
-let config = {
-    apiKey: "AIzaSyAGI4vn6fOQ_HPwMdkvCVR8X6LK5tAA1tk",
-    authDomain: "zootainment-41365.firebaseapp.com",
-    databaseURL: "https://zootainment-41365.firebaseio.com",
+let timer;
+
+const INITIAL_STATE = {
+    move_left: false,
+    move_right: false,
+    error: null
 };
-firebase.initializeApp(config);
 
-let databaseRef = firebase.database().ref("enclosure_1/devices/cannon_1");
+class Controller extends React.Component {
+    constructor(props) {
+        super(props);
 
-export default class Controller extends React.Component {
+        this.state = {...INITIAL_STATE}
+    }
 
     render() {
         return (
@@ -27,68 +29,86 @@ export default class Controller extends React.Component {
                 </div>
                 <div className={"controller"}>
                     <h4 className={"h3-title"}>You have direct control over the cannon now!</h4>
-                    <button className={"shoot left"} onClick={() => moveLeft()}>LEFT</button>
-                    <button className={"shoot"} onClick={() => shoot()}>SHOOT</button>
-                    <button className={"shoot right"} onClick={() => moveRight()}>RIGHT</button>
+                    <button className={"shoot left"}
+                            onMouseDown={() => moveLeft(this.props, true)}
+                            onMouseUp={() => {
+                                stopInterval();
+                                this.props.firebase
+                                    .dbCannonRef("enclosure_1", "cannon_1")
+                                    .update({
+                                        move_left: false
+                                    });
+                            }}>LEFT
+                    </button>
+                    <button className={"shoot"} onClick={() => shoot(this.props)}>SHOOT</button>
+                    <button className={"shoot right"}
+                            onMouseDown={() => moveRight(this.props, true)}
+                            onMouseUp={() => {
+                                stopInterval();
+                                this.props.firebase
+                                    .dbCannonRef("enclosure_1", "cannon_1")
+                                    .update({
+                                        move_right: false
+                                    });
+                            }}>RIGHT
+                    </button>
                 </div>
             </div>
         );
     }
 }
 
-function moveLeft() {
-    console.log("LEFT");
-    databaseRef.update({
-        move_right: false,
-        move_left: true
-    }, function (error) {
-       if (error) {
-           alert(error)
-       } else {
-           sleep(2000).then(() => {
-               databaseRef.update({
-                   move_left: false
-               })
-           })
-       }
-    })
+function stopInterval() {
+    console.log("stopping");
+    clearInterval(timer)
 }
 
-function shoot() {
-    console.log("SHOOT")
-    databaseRef.update({
-        shoot: true,
-    }, function (error) {
-        if (error) {
-            alert(error)
-        } else {
-            sleep(1000).then(() => {
-                databaseRef.update({
-                    shoot: false
-                })
+function moveLeft(ref, left) {
+    timer = setInterval(function fn() {
+        console.log("LEFT");
+        ref.firebase
+            .dbCannonRef("enclosure_1", "cannon_1")
+            .update({
+                move_left: left
             });
-        }
-    })
+        return fn;
+    }(), 500)
 }
 
-function moveRight() {
-    console.log("RIGHT")
-    databaseRef.update({
-        move_right: true,
-        move_left: false
-    }, function (error) {
-        if (error) {
-            alert(error)
-        } else {
-            sleep(2000).then(() => {
-                databaseRef.update({
-                    move_right: false
-                })
+function moveRight(ref, right) {
+    timer = setInterval(function fn() {
+        console.log("RIGHT");
+        ref.firebase
+            .dbCannonRef("enclosure_1", "cannon_1")
+            .update({
+                move_right: right
             });
-        }
-    })
+        return fn;
+    }(), 500)
 }
 
-function sleep (time) {
+function shoot(ref) {
+    console.log("SHOOT");
+    ref.firebase
+        .dbCannonRef("enclosure_1", "cannon_1")
+        .update({
+            shoot: true
+        }, function (error) {
+            if (error) alert(error);
+            else {
+                sleep(1000).then(() => {
+                    ref.firebase
+                        .dbCannonRef("enclosure_1", "cannon_1")
+                        .update({
+                            shoot: false
+                        })
+                });
+            }
+        })
+}
+
+function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
+
+export default withFirebase(Controller);
