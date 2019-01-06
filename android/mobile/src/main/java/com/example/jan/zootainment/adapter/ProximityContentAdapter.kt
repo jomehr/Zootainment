@@ -9,8 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.jan.zootainment.MainActivity
-import com.example.jan.zootainment.QuizIntro
+import com.example.jan.zootainment.AnimalActivity
 import com.example.jan.zootainment.R
 import com.example.jan.zootainment.data.ProximityContent
 import com.example.jan.zootainment.util.ProximityContentUtils
@@ -28,7 +27,7 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-            convertView = inflater.inflate(R.layout.content_proximity, parent, false)
+            convertView = inflater.inflate(R.layout.content_proximity_item, parent, false)
         }
 
         val content = nearbyContent[position]
@@ -46,7 +45,7 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         convertView.setBackgroundColor(ContextCompat.getColor(context, ProximityContentUtils.getColor(content.title)))
 
         convertView.setOnClickListener {
-            val intent = Intent(context as MainActivity, QuizIntro::class.java)
+            val intent = Intent(context, AnimalActivity::class.java)
             intent.putExtra("animal", content.title)
             context.startActivity(intent) }
 

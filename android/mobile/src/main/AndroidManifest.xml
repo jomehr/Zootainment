@@ -21,9 +21,9 @@
         <activity android:name=".Registration"/>
         <activity android:name=".MainActivity"/>
         <activity
-            android:name=".QuizIntro"
+            android:name=".AnimalActivity"
             android:parentActivityName=".MainActivity"/>
-        <activity android:name=".QuizQuestion"/>
+        <activity android:name=".QuizActivity"/>
         <activity
             android:name=".Controller"
             android:screenOrientation="landscape"

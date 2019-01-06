@@ -10,21 +10,22 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.GridView
+import android.view.View
 import com.estimote.mustard.rx_goodness.rx_requirements_wizard.RequirementsWizardFactory
 import com.example.jan.zootainment.adapter.ProximityContentAdapter
 import com.example.jan.zootainment.data.ProximityContent
-import com.example.jan.zootainment.util.ProximityContentManager
+import com.example.jan.zootainment.fragments.MainFragment
+import com.example.jan.zootainment.fragments.MainFragmentTabList
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main_list.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private var proximityContentManager: ProximityContentManager? = null
-    private var proximityContentAdapter: ProximityContentAdapter? = null
-
     private lateinit var auth: FirebaseAuth
+    private lateinit var fragment: MainFragment
+    private lateinit var fragmentTabList: MainFragmentTabList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +34,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         auth = FirebaseAuth.getInstance()
 
-        proximityContentAdapter = ProximityContentAdapter(this)
-        val gridView = findViewById<GridView>(R.id.gridView)
-        gridView.adapter = proximityContentAdapter
+        if (auth.currentUser?.isAnonymous!!) {
+            content_main_status.visibility = View.VISIBLE
+            content_main_login.setOnClickListener {
+                startActivity(Intent(this@MainActivity, Registration::class.java))
+                finish()
+            }
+        }
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -43,42 +48,49 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        fragment = MainFragment()
+        fragmentTabList = MainFragmentTabList()
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+
         RequirementsWizardFactory
             .createEstimoteRequirementsWizard()
             .fulfillRequirements(this,
                 {
                     Log.d(TAG, "requirements fulfilled")
-                    startProximityContentManager()
-
+                    fragmentTransaction.add(R.id.fragment_container, fragmentTabList).commit()
                 },
                 { requirements ->
                     Log.e(TAG, "requirements missing: $requirements")
-                }
-                , { throwable ->
+                },
+                { throwable ->
                     Log.e(TAG, "requirements error: $throwable")
                 })
 
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    private fun startProximityContentManager() {
-        proximityContentManager = ProximityContentManager(this)
-        proximityContentManager?.start()
+    fun setNearbyContent(nearbyContent: List<ProximityContent>) {
+        Log.d(TAG, "setting content: activity")
+        val proximityContentAdapter = ProximityContentAdapter(this)
+
+        val gridView = fragmentTabList.gridView
+        gridView.adapter = proximityContentAdapter
+
+        proximityContentAdapter.setNearbyContent(nearbyContent)
+        proximityContentAdapter.notifyDataSetChanged()
     }
 
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart: ")
-        if (proximityContentManager == null) {
-            Log.d(TAG, "onStart: starting proximityContentManager")
-            startProximityContentManager()
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy: stopping proximityContentManager")
-        proximityContentManager?.stop()
+
     }
 
     override fun onBackPressed() {
@@ -163,12 +175,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun setNearbyContent(nearbyContent: List<ProximityContent>) {
-        proximityContentAdapter?.setNearbyContent(nearbyContent)
-        proximityContentAdapter?.notifyDataSetChanged()
-    }
-
     companion object {
-        private const val TAG = "MainActivity"
+        const val TAG = "MainActivity"
     }
 }

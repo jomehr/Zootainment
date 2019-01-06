@@ -17,7 +17,7 @@ object ProximityContentUtils {
     internal fun getDrawable(animalName: String): Int {
         return when (animalName) {
             //TODO load actual animal drawables
-            "elephant" -> R.drawable.ic_image_default
+            "elephant" -> R.drawable.elephant_icon
             "giraffe" -> R.drawable.ic_image_default
             "monkey" -> R.drawable.ic_image_default
 

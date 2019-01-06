@@ -15,9 +15,9 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_quiz_question.*
 import kotlinx.android.synthetic.main.content_answers_rect.*
 
-class QuizQuestion : AppCompatActivity(), View.OnClickListener {
+class QuizActivity : AppCompatActivity(), View.OnClickListener {
 
-    private val timeTotal: Long = 20 * 1000 //20 seconds
+    private val timeTotal: Long = 30 * 1000 //30 seconds
     private val interval: Long = 1000 //1 second
     private var finishedMillis: Long = 0
     private var progressTotal: Int = 0
@@ -54,44 +54,54 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun loadQuestion() {
-        questionCounter++
-        val progressText = "$questionCounter/5"
 
-        question_progress.text = progressText
-        questionReference.child("q$questionCounter").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    Log.d(TAG, "q$questionCounter")
-                    val questionData = dataSnapshot.getValue(Question::class.java)
+        if (questionCounter < 4) {
+            questionCounter++
 
-                    if (questionData == null) {
-                        Log.e(TAG, "Question is unexpectedly null")
-                        Toast.makeText(baseContext,
-                            "Error: could not fetch question.",
-                            Toast.LENGTH_SHORT).show()
-                    }else {
-                        Log.d(TAG, "Question loaded successfully")
+            question_progress.text = "$questionCounter/4"
 
-                        correctAnswer = questionData.solution!!
+            questionReference.child("q$questionCounter").addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        Log.d(TAG, "q$questionCounter")
+                        val questionData = dataSnapshot.getValue(Question::class.java)
 
-                        question.text = questionData.question
-                        answer1.text = questionData.answer1
-                        answer2.text = questionData.answer2
-                        answer3.text = questionData.answer3
-                        answer4.text = questionData.answer4
+                        if (questionData == null) {
+                            Log.e(TAG, "Question is unexpectedly null")
+                            Toast.makeText(baseContext,
+                                "Error: could not fetch question.",
+                                Toast.LENGTH_SHORT).show()
+                        }else {
+                            Log.d(TAG, "Question loaded successfully")
 
-                        question_pb.visibility = View.GONE
-                        question_ll.visibility = View.VISIBLE
+                            correctAnswer = questionData.solution!!
 
-                        timer.start()
+                            question.text = questionData.question
+                            answer1.text = questionData.answer1
+                            answer2.text = questionData.answer2
+                            answer3.text = questionData.answer3
+                            answer4.text = questionData.answer4
+
+                            question_pb.visibility = View.GONE
+                            question_ll.visibility = View.VISIBLE
+
+                            timer.start()
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.w(TAG, "loadQuestion:onCancelled", databaseError.toException())
                     }
                 }
+            )
+        } else {
+            Toast.makeText(baseContext,
+                "You have reached the daily limit in this enclosure. Go to the next one.",
+                Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this@QuizActivity, MainActivity::class.java))
+            finish()
+        }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.w(TAG, "loadQuestion:onCancelled", databaseError.toException())
-                }
-            }
-        )
     }
 
     private fun timer (timeTotal: Long, interval: Long): CountDownTimer {
@@ -106,7 +116,8 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
 
             override fun onFinish() {
                 question_pb_timer.progress = 100
-                AlertDialog.Builder(this@QuizQuestion)
+                updateQuestionFeedback(R.drawable.shape_round_wrong)
+                AlertDialog.Builder(this@QuizActivity)
                     .setTitle("Ups!")
                     .setMessage("No answer was selected. Do you want to continue?")
                     .setCancelable(false)
@@ -114,15 +125,24 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
                         loadQuestion()
                         dialog.cancel() }
                     .setNegativeButton("Stop") {dialog, id ->
-                        startActivity(Intent(this@QuizQuestion, MainActivity::class.java))
+                        startActivity(Intent(this@QuizActivity, MainActivity::class.java))
                         dialog.cancel()
                         finish()}
                     .setNeutralButton("Spend points") {dialog, id ->
-                        startActivity(Intent(this@QuizQuestion, Controller::class.java))
+                        startActivity(Intent(this@QuizActivity, Controller::class.java))
                         dialog.cancel()
                         finish()}
                     .show()
             }
+        }
+    }
+
+    private fun updateQuestionFeedback(drawable: Int) {
+        when (questionCounter) {
+            1 -> question_feedback1.background = getDrawable(drawable)
+            2 -> question_feedback2.background = getDrawable(drawable)
+            3 -> question_feedback3.background = getDrawable(drawable)
+            4 -> question_feedback4.background = getDrawable(drawable)
         }
     }
 
@@ -150,8 +170,9 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         timer.cancel()
         if (v.tag == correctAnswer.toString()) {
+            updateQuestionFeedback(R.drawable.shape_round_green)
             v.background = getDrawable(R.drawable.shape_round_green)
-            AlertDialog.Builder(this@QuizQuestion)
+            AlertDialog.Builder(this@QuizActivity)
                 .setTitle("Congratulations!")
                 .setMessage("The answer was correct! You have received 250 points.")
                 .setCancelable(false)
@@ -160,18 +181,19 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
                     v.background = getDrawable(R.drawable.shape_round)
                     dialog.cancel()}
                 .setNegativeButton("Stop") {dialog, id ->
-                    startActivity(Intent(this@QuizQuestion, MainActivity::class.java))
+                    startActivity(Intent(this@QuizActivity, MainActivity::class.java))
                     dialog.cancel()
                     finish()}
                 .setNeutralButton("Spend points") {dialog, id ->
-                    startActivity(Intent(this@QuizQuestion, Controller::class.java))
+                    startActivity(Intent(this@QuizActivity, Controller::class.java))
                     dialog.cancel()
                     finish()}
                 .show()
         }
         else {
             v.background = getDrawable(R.drawable.shape_round_wrong)
-            AlertDialog.Builder(this@QuizQuestion)
+            updateQuestionFeedback(R.drawable.shape_round_wrong)
+            AlertDialog.Builder(this@QuizActivity)
                 .setTitle("Ups!")
                 .setMessage("The answer was wrong! Do you want to continue?")
                 .setCancelable(false)
@@ -180,11 +202,11 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
                     v.background = getDrawable(R.drawable.shape_round)
                     dialog.cancel() }
                 .setNegativeButton("Stop") {dialog, id ->
-                    startActivity(Intent(this@QuizQuestion, MainActivity::class.java))
+                    startActivity(Intent(this@QuizActivity, MainActivity::class.java))
                     dialog.cancel()
                     finish()}
                 .setNeutralButton("Spend points") {dialog, id ->
-                    startActivity(Intent(this@QuizQuestion, Controller::class.java))
+                    startActivity(Intent(this@QuizActivity, Controller::class.java))
                     dialog.cancel()
                     finish()}
                 .show()
@@ -192,6 +214,6 @@ class QuizQuestion : AppCompatActivity(), View.OnClickListener {
     }
 
     companion object {
-        private const val TAG = "QuizQuestion"
+        private const val TAG = "QuizActivity"
     }
 }

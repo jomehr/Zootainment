@@ -10,9 +10,9 @@ import android.util.Log
 import com.estimote.proximity_sdk.api.ProximityObserver
 import com.estimote.proximity_sdk.api.ProximityObserverBuilder
 import com.estimote.proximity_sdk.api.ProximityZoneBuilder
+import com.example.jan.zootainment.AnimalActivity
 import com.example.jan.zootainment.MainActivity
 import com.example.jan.zootainment.MyApplication
-import com.example.jan.zootainment.QuizIntro
 import com.example.jan.zootainment.R
 import com.example.jan.zootainment.data.ProximityContent
 
@@ -22,6 +22,7 @@ class ProximityContentManager(private val context: Context) {
 
     fun start() {
 
+        Log.d(TAG, context.toString())
         val proximityObserver = ProximityObserverBuilder(context, (context.applicationContext as MyApplication).cloudCredentials)
             .withTelemetryReportingDisabled()
             .withEstimoteSecureMonitoringDisabled()
@@ -56,7 +57,7 @@ class ProximityContentManager(private val context: Context) {
                 for (data in contexts) {
                     val nearbyAnimal = data.attachments["animal"] ?: "unknown"
 
-                    val intent = Intent(context, QuizIntro::class.java).putExtra("animal", nearbyAnimal)
+                    val intent = Intent(context, AnimalActivity::class.java).putExtra("animal", nearbyAnimal)
                     val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
                         addNextIntentWithParentStack(intent)
                         getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT)
