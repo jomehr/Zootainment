@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import com.example.jan.zootainment.data.Question
 import com.example.jan.zootainment.util.ProximityContentUtils
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_quiz_question.*
 import kotlinx.android.synthetic.main.content_answers_rect.*
@@ -24,9 +25,13 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     private var correctAnswer: Int = 0
     private var questionCounter: Int = 0
 
+    private val firebase = FirebaseDatabase.getInstance().reference
+    private val user = FirebaseAuth.getInstance().currentUser?.uid
+
     private lateinit var timer: CountDownTimer
     private lateinit var animal: String
     private lateinit var questionReference: DatabaseReference
+    private lateinit var userReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +42,8 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         animal = intent.getStringExtra("animal")
 
         //init database
-        questionReference = FirebaseDatabase.getInstance().reference
-            .child("enclosure_1").child("questions")
+        questionReference = firebase.child("enclosure_1").child("questions")
+        userReference = firebase.child("users").child(user!!)
 
         //init views
         answer1.setOnClickListener(this)
@@ -89,8 +94,8 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w(TAG, "loadQuestion:onCancelled", databaseError.toException())
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(TAG, "loadQuestion:onCancelled", error.toException())
                     }
                 }
             )
@@ -102,6 +107,28 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
             finish()
         }
 
+    }
+
+    private fun calculatePoints(): Int {
+        //TODO testing
+        val points = ((timeTotal - finishedMillis)/1000).toInt()
+
+        userReference.child("points").addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(TAG, "loadPoints:onCancelled", error.toException())
+                }
+
+                override fun onDataChange(data: DataSnapshot) {
+                    val curPoints = data.getValue(Int::class.java)!!
+
+                    val totalPoints = curPoints + points
+                    userReference.child("points").setValue(totalPoints)
+                }
+            }
+        )
+
+        return points
     }
 
     private fun timer (timeTotal: Long, interval: Long): CountDownTimer {
@@ -117,6 +144,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
             override fun onFinish() {
                 question_pb_timer.progress = 100
                 updateQuestionFeedback(R.drawable.shape_round_wrong)
+                //TODO make alertdialog builder util to clean up code
                 AlertDialog.Builder(this@QuizActivity)
                     .setTitle("Ups!")
                     .setMessage("No answer was selected. Do you want to continue?")
@@ -170,11 +198,13 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         timer.cancel()
         if (v.tag == correctAnswer.toString()) {
+            val points = calculatePoints()
             updateQuestionFeedback(R.drawable.shape_round_green)
             v.background = getDrawable(R.drawable.shape_round_green)
+
             AlertDialog.Builder(this@QuizActivity)
                 .setTitle("Congratulations!")
-                .setMessage("The answer was correct! You have received 250 points.")
+                .setMessage("The answer was correct! You have received $points points.")
                 .setCancelable(false)
                 .setPositiveButton("Continue") {dialog, id ->
                     loadQuestion()
@@ -193,6 +223,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         else {
             v.background = getDrawable(R.drawable.shape_round_wrong)
             updateQuestionFeedback(R.drawable.shape_round_wrong)
+
             AlertDialog.Builder(this@QuizActivity)
                 .setTitle("Ups!")
                 .setMessage("The answer was wrong! Do you want to continue?")
