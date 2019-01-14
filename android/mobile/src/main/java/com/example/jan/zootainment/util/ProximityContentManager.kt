@@ -63,7 +63,7 @@ class ProximityContentManager(private val context: Context) {
                     }
 
                     val notification = NotificationCompat.Builder(context, "animal_close")
-                        .setSmallIcon(R.drawable.ic_notification_giraffe)
+                        .setSmallIcon(R.drawable.ic_image_default)
                         .setContentTitle("$nearbyAnimal enclosure")
                         .setContentText("There is a quiz and feeding cannon available")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)

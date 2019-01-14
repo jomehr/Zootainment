@@ -34,7 +34,7 @@ class Controller extends React.Component {
                             onMouseUp={() => {
                                 stopInterval();
                                 this.props.firebase
-                                    .dbCannonRef("enclosure_1", "cannon_1")
+                                    .dbCannonRef("elephants", "cannon_1")
                                     .update({
                                         move_left: false
                                     });
@@ -46,7 +46,7 @@ class Controller extends React.Component {
                             onMouseUp={() => {
                                 stopInterval();
                                 this.props.firebase
-                                    .dbCannonRef("enclosure_1", "cannon_1")
+                                    .dbCannonRef("elephants", "cannon_1")
                                     .update({
                                         move_right: false
                                     });
@@ -67,7 +67,7 @@ function moveLeft(ref, left) {
     timer = setInterval(function fn() {
         console.log("LEFT");
         ref.firebase
-            .dbCannonRef("enclosure_1", "cannon_1")
+            .dbCannonRef("elephants", "cannon_1")
             .update({
                 move_left: left
             });
@@ -79,7 +79,7 @@ function moveRight(ref, right) {
     timer = setInterval(function fn() {
         console.log("RIGHT");
         ref.firebase
-            .dbCannonRef("enclosure_1", "cannon_1")
+            .dbCannonRef("elephants", "cannon_1")
             .update({
                 move_right: right
             });
@@ -90,7 +90,7 @@ function moveRight(ref, right) {
 function shoot(ref) {
     console.log("SHOOT");
     ref.firebase
-        .dbCannonRef("enclosure_1", "cannon_1")
+        .dbCannonRef("elephants", "cannon_1")
         .update({
             shoot: true
         }, function (error) {
@@ -98,7 +98,7 @@ function shoot(ref) {
             else {
                 sleep(1000).then(() => {
                     ref.firebase
-                        .dbCannonRef("enclosure_1", "cannon_1")
+                        .dbCannonRef("elephants", "cannon_1")
                         .update({
                             shoot: false
                         })
