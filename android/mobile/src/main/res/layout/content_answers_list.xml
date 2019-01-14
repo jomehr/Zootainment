@@ -10,41 +10,45 @@
         android:id="@+id/answer1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:background="@drawable/shape_round"
         android:gravity="center"
         android:tag="1"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/answer2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/shape_round"
         android:gravity="center"
         android:tag="2"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/answer3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/shape_round"
         android:gravity="center"
         android:tag="3"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/answer4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginTop="20dp"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:tag="4"
         android:gravity="center"
         android:background="@drawable/shape_round"/>

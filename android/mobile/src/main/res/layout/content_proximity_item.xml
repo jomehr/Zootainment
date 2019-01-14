@@ -9,21 +9,21 @@
 
     <ImageView
         android:id="@+id/proximity_animal"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_image_default"
-        android:contentDescription="image of animal" />
+        tools:src="@drawable/ic_icon_giraffe"
+        android:tint="@color/white"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/proximity_animal"
         app:layout_constraintStart_toEndOf="@+id/proximity_animal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/proximity_animal">
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="animal"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold" />
 
@@ -44,16 +44,16 @@
                 android:id="@+id/proximity_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="questions: "
-                android:textColor="@android:color/black"
+                android:text="progress: "
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/proximity_var"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="x"
-                android:textColor="@android:color/black"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
 

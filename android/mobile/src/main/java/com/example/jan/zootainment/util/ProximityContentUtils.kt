@@ -6,9 +6,9 @@ object ProximityContentUtils {
 
     internal fun getColor(animalName: String): Int {
         return when (animalName) {
-            "elephant" -> R.color.elephant
-            "giraffe" -> R.color.giraffe
-            "monkey" -> R.color.monkey
+            "elephants" -> R.color.elephant
+            "giraffes" -> R.color.giraffe
+            "baboons" -> R.color.monkey
 
             else -> R.color.defaultContentBackground
         }
@@ -16,10 +16,9 @@ object ProximityContentUtils {
 
     internal fun getDrawable(animalName: String): Int {
         return when (animalName) {
-            //TODO load actual animal drawables
-            "elephant" -> R.drawable.elephant_icon
-            "giraffe" -> R.drawable.ic_image_default
-            "monkey" -> R.drawable.ic_image_default
+            "elephants" -> R.drawable.ic_icon_elephant
+            "giraffes" -> R.drawable.ic_icon_giraffe
+            "baboons" -> R.drawable.ic_icon_monkey
 
             else -> R.drawable.ic_image_default
         }

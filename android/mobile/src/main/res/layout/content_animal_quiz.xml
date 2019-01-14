@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,48 +16,50 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="information"
-            android:textSize="20sp"
-            android:textColor="@color/black"/>
+            android:text="Information"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:weightSum="5"
-            android:layout_marginTop="10dp">
+            android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="questions:"
-                android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:text="Questions:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/question_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
-                android:textColor="@color/colorPrimary"/>
+                tools:text="6" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:weightSum="5"
-            android:layout_marginTop="10dp">
+            android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="daily limit: "
-                android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:text="Daily Limit: "
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/question_limit"
@@ -64,48 +67,49 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="4"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="progress:"
-                android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:text="Progress:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/question_limit_progress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
-                android:textColor="@color/colorPrimary"/>
+                tools:text="2/4" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:weightSum="5"
-            android:layout_marginTop="10dp">
+            android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="timer:"
-                android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:text="Timer:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/question_timer"
@@ -113,24 +117,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="30 sec"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:weightSum="5"
-            android:layout_marginTop="10dp">
+            android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="points per question:"
-                android:textSize="20sp"
-                android:textColor="@color/black"/>
+                android:text="Points per Question:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/question_points"
@@ -138,21 +142,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="up to 30"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <Button
             android:id="@+id/quiz_start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
+            android:background="@drawable/shape_round"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:padding="10dp"
             android:text="start quiz"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:background="@drawable/shape_round"
-            android:backgroundTint="@color/colorPrimaryDark"/>
+            android:textColor="@color/white" />
 
         <LinearLayout
             android:id="@+id/question_advice_ll"
@@ -161,36 +165,37 @@
             android:orientation="vertical">
 
             <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="advice"
-            android:textSize="20sp"
-            android:textColor="@color/black"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Advice"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textAlignment="viewStart"
                 android:text="You have limited time. Make sure to read the information signs before starting the quiz."
+                android:textAlignment="viewStart"
                 android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textAlignment="viewStart"
                 android:text="The faster you answer a question the more points you get."
+                android:textAlignment="viewStart"
                 android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textAlignment="viewStart"
                 android:text="You can stop the quiz after each question to refresh your memory."
+                android:textAlignment="viewStart"
                 android:textColor="@color/black" />
 
         </LinearLayout>

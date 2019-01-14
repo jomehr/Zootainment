@@ -18,6 +18,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/animal_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:padding="10dp"
+            android:background="@color/white"
+            android:contentDescription="animal picture" />
+
         <TextView
             android:id="@+id/animal_name"
             android:layout_width="match_parent"
@@ -45,7 +54,7 @@
             android:layout_height="wrap_content"
             app:tabIndicatorColor="@color/colorPrimaryDark"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabSelectedTextColor="@color/colorPrimaryLight"
             app:tabTextColor="@color/colorPrimaryDark"/>
 
         <android.support.v4.view.ViewPager

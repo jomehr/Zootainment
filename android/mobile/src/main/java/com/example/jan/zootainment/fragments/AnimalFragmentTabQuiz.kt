@@ -26,7 +26,7 @@ class AnimalFragmentTabQuiz: Fragment() {
 
         //set up view
         button.setOnClickListener { loadQuiz(intent) }
-        questionCounter.text = arguments?.getString("questions")
+        questionCounter.text = arguments?.getInt("questions").toString()
 
         return rootView
     }

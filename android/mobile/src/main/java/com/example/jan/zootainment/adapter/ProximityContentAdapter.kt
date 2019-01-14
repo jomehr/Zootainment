@@ -33,12 +33,10 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         val content = nearbyContent[position]
 
         val title = convertView!!.findViewById<TextView>(R.id.proximity_title)
-        val subtitle = convertView.findViewById<TextView>(R.id.proximity_subtitle)
         val questions = convertView.findViewById<TextView>(R.id.proximity_var)
         val image = convertView.findViewById<ImageView>(R.id.proximity_animal)
 
         title.text = content.title
-        subtitle.text = content.subtitle
         questions.text = content.questions
         image.setImageResource(ProximityContentUtils.getDrawable(content.title))
 

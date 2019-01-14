@@ -26,7 +26,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     private var questionCounter: Int = 0
 
     private val firebase = FirebaseDatabase.getInstance().reference
-    private val user = FirebaseAuth.getInstance().currentUser?.uid
+    private val user = FirebaseAuth.getInstance().currentUser?.uid!!
 
     private lateinit var timer: CountDownTimer
     private lateinit var animal: String
@@ -36,14 +36,14 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_question)
-        Log.d(TAG, "onCreate called...")
+        Log.d(TAG, "onCreate:UID $user")
 
         //get data from previous activity
         animal = intent.getStringExtra("animal")
 
         //init database
-        questionReference = firebase.child("enclosure_1").child("questions")
-        userReference = firebase.child("users").child(user!!)
+        questionReference = firebase.child(animal).child("questions")
+        userReference = firebase.child("users").child(user)
 
         //init views
         answer1.setOnClickListener(this)
@@ -120,9 +120,9 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 override fun onDataChange(data: DataSnapshot) {
-                    val curPoints = data.getValue(Int::class.java)!!
+                    val curPoints = data.getValue(Int::class.java)
 
-                    val totalPoints = curPoints + points
+                    val totalPoints = curPoints?.plus(points)
                     userReference.child("points").setValue(totalPoints)
                 }
             }
@@ -157,7 +157,9 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                         dialog.cancel()
                         finish()}
                     .setNeutralButton("Spend points") {dialog, id ->
-                        startActivity(Intent(this@QuizActivity, Controller::class.java))
+                        val intent = Intent(this@QuizActivity, Controller::class.java)
+                        intent.putExtra("animal", animal)
+                        startActivity(intent)
                         dialog.cancel()
                         finish()}
                     .show()

@@ -19,15 +19,21 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:backgroundTint="?attr/colorPrimary"
+                app:logo="@drawable/title4"
+                android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+
+            </android.support.v7.widget.Toolbar>
+
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <RelativeLayout
             android:id="@+id/content_main_status"
@@ -43,20 +49,19 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:text="You are not signed in!"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/content_main_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/shape_round"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:padding="5dp"
                 android:text="Log in"
                 android:textColor="@color/white" />
         </RelativeLayout>

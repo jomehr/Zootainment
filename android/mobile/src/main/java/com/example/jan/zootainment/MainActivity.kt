@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         auth = FirebaseAuth.getInstance()
 
@@ -111,7 +112,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle action bar item clicks here.
         return when (item.itemId) {
             R.id.dev_cannonControl -> {
-                startActivity(Intent(this@MainActivity, Controller::class.java))
+                val intent = Intent(this@MainActivity, Controller::class.java)
+                intent.putExtra("animal", "elephants")
+                startActivity(intent)
                 true
             }
             R.id.action_settings -> true

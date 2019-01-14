@@ -42,9 +42,8 @@ class ProximityContentManager(private val context: Context) {
                 for (data in contexts) {
                     Log.d(TAG, "attachment: ${data.attachments}")
                     val animal: String = data.attachments["animal"] ?: "unknown"
-                    val subtitle = "questions: "
                     val questions = "x"
-                    nearbyContent.add(ProximityContent(animal, subtitle, questions))
+                    nearbyContent.add(ProximityContent(animal, questions))
                 }
                 (context as MainActivity).setNearbyContent(nearbyContent)
             }
@@ -64,7 +63,7 @@ class ProximityContentManager(private val context: Context) {
                     }
 
                     val notification = NotificationCompat.Builder(context, "animal_close")
-                        .setSmallIcon(R.drawable.ic_image_default)
+                        .setSmallIcon(R.drawable.ic_notification_giraffe)
                         .setContentTitle("$nearbyAnimal enclosure")
                         .setContentText("There is a quiz and feeding cannon available")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)

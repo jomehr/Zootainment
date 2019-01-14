@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <fragment
-            class="com.example.jan.zootainment.fragments.PointCounter"
+        <FrameLayout
             android:id="@+id/fragment_point_counter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,7 +20,9 @@
             android:id="@+id/cannon_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="feeding cannons"
+            android:padding="5dp"
+            android:text="Feeding Cannons"
+            android:textStyle="bold"
             android:textSize="20sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,18 +31,17 @@
 
         <LinearLayout
             android:id="@+id/feeding_limit_ll"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            app:layout_constraintEnd_toStartOf="@id/feeding_limit_ll2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cannon_title">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:text="limit:"
+                android:text="Limit:"
                 android:textSize="20sp"
                 android:textColor="@color/black"/>
 
@@ -51,13 +51,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="20sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                tools:text="30 min"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/feeding_limit_ll2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            app:layout_constraintStart_toEndOf="@id/feeding_limit_ll"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cannon_title">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
-                android:text="cost:"
+                android:text="Cost:"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -66,22 +76,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
                 android:textColor="@color/colorPrimary"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:text="60"/>
+
         </LinearLayout>
 
         <Button
             android:id="@+id/feed_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:padding="10dp"
             android:background="@drawable/shape_round"
             android:backgroundTint="@color/colorPrimaryDark"
             android:text="pay and feed"
             android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@id/buy_points_button"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/feeding_limit_ll"/>
+
+        <Button
+            android:id="@+id/buy_points_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_round"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:text="buy points"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/feed_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/feeding_limit_ll"/>
 
@@ -96,18 +122,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/feed_button">
-
-            <Button
-                android:id="@+id/buy_points_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="10dp"
-                android:layout_gravity="center"
-                android:background="@drawable/shape_round"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:text="buy points"
-                android:textColor="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"

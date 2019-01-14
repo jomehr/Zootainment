@@ -1,6 +1,5 @@
 package com.example.jan.zootainment.adapter
 
-import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -23,12 +22,6 @@ class FragmentTabAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
     }
 
     fun addFragment(fragment: Fragment, title: String) {
-        fragmentList.add(fragment)
-        fragmentTitleList.add(title)
-    }
-
-    fun addFragmentWithData(fragment: Fragment, title: String, bundle: Bundle) {
-        fragment.arguments = bundle
         fragmentList.add(fragment)
         fragmentTitleList.add(title)
     }
