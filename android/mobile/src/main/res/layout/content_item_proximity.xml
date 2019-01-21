@@ -44,6 +44,7 @@
                 android:id="@+id/proximity_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="progress: "
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -52,7 +53,16 @@
                 android:id="@+id/proximity_var"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="x"
+                android:layout_gravity="center"
+                tools:text="2"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="/4"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
