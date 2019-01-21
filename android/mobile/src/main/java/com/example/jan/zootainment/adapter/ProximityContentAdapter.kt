@@ -27,7 +27,7 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-            convertView = inflater.inflate(R.layout.content_proximity_item, parent, false)
+            convertView = inflater.inflate(R.layout.content_item_proximity, parent, false)
         }
 
         val content = nearbyContent[position]
@@ -37,7 +37,7 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         val image = convertView.findViewById<ImageView>(R.id.proximity_animal)
 
         title.text = content.title
-        questions.text = content.questions
+        questions.text = content.questions.toString()
         image.setImageResource(ProximityContentUtils.getDrawable(content.title))
 
         convertView.setBackgroundColor(ContextCompat.getColor(context, ProximityContentUtils.getColor(content.title)))
@@ -45,6 +45,7 @@ class ProximityContentAdapter(private val context: Context) : BaseAdapter() {
         convertView.setOnClickListener {
             val intent = Intent(context, AnimalActivity::class.java)
             intent.putExtra("animal", content.title)
+            intent.putExtra("progress", content.questions)
             context.startActivity(intent) }
 
         return convertView

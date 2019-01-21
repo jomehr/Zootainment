@@ -3,8 +3,7 @@ package com.example.jan.zootainment.data
 import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties
-data class OverviewData (
-        var cost: Int = 0,
-        var limit: String = "",
-        var questions: Int = 0
+data class ProgressOverview (
+    var counter: Int? = 0,
+    var timer: Int? = 0
 )

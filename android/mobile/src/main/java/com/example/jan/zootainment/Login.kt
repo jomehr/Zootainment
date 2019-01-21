@@ -27,16 +27,6 @@ class Login : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null)
-        if (auth.currentUser != null) {
-            Log.d(TAG, "user is anonymous: ${auth.currentUser?.uid}")
-            startActivity(Intent(this@Login, MainActivity::class.java))
-            finish()
-        }
-    }
-
     private fun signInAnonymously() {
         auth.signInAnonymously()
             .addOnCompleteListener(this) { task ->

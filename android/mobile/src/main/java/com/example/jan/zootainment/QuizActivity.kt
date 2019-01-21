@@ -24,6 +24,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     private var progressTotal: Int = 0
     private var correctAnswer: Int = 0
     private var questionCounter: Int = 0
+    private var questionLoader: Int = 0
 
     private val firebase = FirebaseDatabase.getInstance().reference
     private val user = FirebaseAuth.getInstance().currentUser?.uid!!
@@ -40,6 +41,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
 
         //get data from previous activity
         animal = intent.getStringExtra("animal")
+        questionLoader = intent.getIntExtra("questions", 1)
 
         //init database
         questionReference = firebase.child(animal).child("questions")
@@ -58,59 +60,55 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         timer = timer(timeTotal, interval)
     }
 
-    private fun loadQuestion() {
+    private fun loadQuestion() = if (questionCounter < 4) {
+        questionCounter++
 
-        if (questionCounter < 4) {
-            questionCounter++
+        question_progress.text = "$questionCounter/4"
 
-            question_progress.text = "$questionCounter/4"
+        //load random number between 1 and total question in database
+        //TODO implement progress to validate if question was already answered
+        val random = (1..questionLoader).random()
 
-            questionReference.child("q$questionCounter").addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        Log.d(TAG, "q$questionCounter")
-                        val questionData = dataSnapshot.getValue(Question::class.java)
+        questionReference.child("q$random").addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Log.d(TAG, "q$random")
+                    val questionData = dataSnapshot.getValue(Question::class.java)
 
-                        if (questionData == null) {
-                            Log.e(TAG, "Question is unexpectedly null")
-                            Toast.makeText(baseContext,
-                                "Error: could not fetch question.",
-                                Toast.LENGTH_SHORT).show()
-                        }else {
-                            Log.d(TAG, "Question loaded successfully")
+                    if (questionData == null) {
+                        Log.e(TAG, "Question is unexpectedly null")
+                        Toast.makeText(baseContext, "Error: could not fetch question.", Toast.LENGTH_SHORT).show()
+                    }else {
+                        Log.d(TAG, "Question loaded successfully")
 
-                            correctAnswer = questionData.solution!!
+                        correctAnswer = questionData.solution!!
 
-                            question.text = questionData.question
-                            answer1.text = questionData.answer1
-                            answer2.text = questionData.answer2
-                            answer3.text = questionData.answer3
-                            answer4.text = questionData.answer4
+                        question.text = questionData.question
+                        answer1.text = questionData.answer1
+                        answer2.text = questionData.answer2
+                        answer3.text = questionData.answer3
+                        answer4.text = questionData.answer4
 
-                            question_pb.visibility = View.GONE
-                            question_ll.visibility = View.VISIBLE
+                        question_pb.visibility = View.GONE
+                        question_ll.visibility = View.VISIBLE
 
-                            timer.start()
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "loadQuestion:onCancelled", error.toException())
+                        timer.start()
                     }
                 }
-            )
-        } else {
-            Toast.makeText(baseContext,
-                "You have reached the daily limit in this enclosure. Go to the next one.",
-                Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this@QuizActivity, MainActivity::class.java))
-            finish()
-        }
-
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(TAG, "loadQuestion:onCancelled", error.toException())
+                }
+            }
+        )
+    } else {
+        Toast.makeText(this,
+            "You have reached the daily limit in this enclosure. Go to the next one.",
+            Toast.LENGTH_LONG).show()
+        startActivity(Intent(this@QuizActivity, MainActivity::class.java))
+        finish()
     }
 
     private fun calculatePoints(): Int {
-        //TODO testing
         val points = ((timeTotal - finishedMillis)/1000).toInt()
 
         userReference.child("points").addListenerForSingleValueEvent(
@@ -159,6 +157,7 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                     .setNeutralButton("Spend points") {dialog, id ->
                         val intent = Intent(this@QuizActivity, Controller::class.java)
                         intent.putExtra("animal", animal)
+                        intent.putExtra("device", "cannon_1")
                         startActivity(intent)
                         dialog.cancel()
                         finish()}
@@ -182,21 +181,6 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         loadQuestion()
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume called...")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause called...")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop called...")
-    }
-
     override fun onClick(v: View) {
         timer.cancel()
         if (v.tag == correctAnswer.toString()) {
@@ -217,7 +201,10 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                     dialog.cancel()
                     finish()}
                 .setNeutralButton("Spend points") {dialog, id ->
-                    startActivity(Intent(this@QuizActivity, Controller::class.java))
+                    val intent = Intent(this@QuizActivity, Controller::class.java)
+                    intent.putExtra("animal", animal)
+                    intent.putExtra("device", "cannon_1")
+                    startActivity(intent)
                     dialog.cancel()
                     finish()}
                 .show()
@@ -239,7 +226,10 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                     dialog.cancel()
                     finish()}
                 .setNeutralButton("Spend points") {dialog, id ->
-                    startActivity(Intent(this@QuizActivity, Controller::class.java))
+                    val intent = Intent(this@QuizActivity, Controller::class.java)
+                    intent.putExtra("animal", animal)
+                    intent.putExtra("device", "cannon_1")
+                    startActivity(intent)
                     dialog.cancel()
                     finish()}
                 .show()

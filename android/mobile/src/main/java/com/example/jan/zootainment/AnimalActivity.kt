@@ -6,28 +6,23 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
+import com.example.jan.zootainment.adapter.DeviceContentAdapter
 import com.example.jan.zootainment.adapter.FragmentTabAdapter
-import com.example.jan.zootainment.data.OverviewData
+import com.example.jan.zootainment.data.DeviceData
 import com.example.jan.zootainment.fragments.AnimalFragmentTabOverview
 import com.example.jan.zootainment.fragments.AnimalFragmentTabQuiz
-import com.example.jan.zootainment.fragments.PointCounter
 import com.example.jan.zootainment.util.ProximityContentUtils
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_animal.*
 
-class AnimalActivity : FragmentActivity(), AnimalFragmentTabOverview.OnFragmentInteractionListener, PointCounter.OnPointsCounterListener {
-
-    override fun messageFromCounter(count: Int) {
-        Log.d(TAG, "received communication from counter fragment: $count")
-    }
-
-    override fun messageFromParent() {
-        Log.d(TAG, "received communication from parent fragment")
-    }
+class AnimalActivity : FragmentActivity() {
 
     private lateinit var fragmentTabAdapter: FragmentTabAdapter
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
+    private lateinit var deviceList: ArrayList<DeviceData>
+    private lateinit var overview: AnimalFragmentTabOverview
+    private lateinit var deviceContentAdapter: DeviceContentAdapter
 
     private val firebase = FirebaseDatabase.getInstance().reference
 
@@ -41,47 +36,51 @@ class AnimalActivity : FragmentActivity(), AnimalFragmentTabOverview.OnFragmentI
 
         //get data from previous activity
         animal = intent.getStringExtra("animal")
+        val questionProg = intent.getIntExtra("progress", 0)
+        Log.d(TAG, "progress:" + questionProg.toString())
 
         //load view with intent data
         animal_name.text = animal
         loadAnimalPicture(animal)
         animal_background.setBackgroundColor(ContextCompat.getColor(this, ProximityContentUtils.getColor(animal)))
 
-        //create bundle for fragments with intent data
-        val quizBundle = Bundle()
-        val overviewBundle = Bundle()
-        quizBundle.putString("animal", animal)
-        overviewBundle.putString("animal", animal)
-
         animalDataRef = firebase.child(animal).child("data")
 
+        val quiz = AnimalFragmentTabQuiz()
+        overview = AnimalFragmentTabOverview()
+
+        deviceList = ArrayList()
+
+        fragmentTabAdapter = FragmentTabAdapter(supportFragmentManager)
+        fragmentTabAdapter.addFragment(overview, "Overview")
+        fragmentTabAdapter.addFragment(quiz, "Quiz")
+
+        viewPager = findViewById(R.id.animal_viewpager)
+        viewPager.adapter = fragmentTabAdapter
+
+        tabLayout = findViewById(R.id.animal_tab)
+        tabLayout.setupWithViewPager(viewPager)
 
         animalDataRef.addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val data = dataSnapshot.getValue(OverviewData::class.java)
+                    //create bundle for fragments with intent data
+                    val quizBundle = Bundle()
 
-                    overviewBundle.putString("limit", data?.limit)
-                    overviewBundle.putInt("cost", data?.cost!!)
-                    quizBundle.putInt("questions", data.questions)
+                    quizBundle.putString("animal", animal)
+                    quizBundle.putInt("progress", questionProg)
+                    quizBundle.putInt("questions", 6)
+                    quiz.putQuizArguments(quizBundle)
 
-                    val quiz = AnimalFragmentTabQuiz()
-                    val overview = AnimalFragmentTabOverview()
+                    //deviceList[dataSnapshot.childrenCount.toInt()]
+                    for (data in dataSnapshot.children) {
 
-                    quiz.arguments = quizBundle
-                    overview.arguments = overviewBundle
-
-                    fragmentTabAdapter = FragmentTabAdapter(supportFragmentManager)
-                    fragmentTabAdapter.addFragment(overview, "Overview")
-                    fragmentTabAdapter.addFragment(quiz, "Quiz")
-
-                    viewPager = findViewById(R.id.animal_viewpager)
-                    viewPager.adapter = fragmentTabAdapter
-
-                    tabLayout = findViewById(R.id.animal_tab)
-                    tabLayout.setupWithViewPager(viewPager)
-
+                        val device = data.getValue(DeviceData::class.java)
+                        deviceList.add(device!!)
+                    }
+                    overview.changeDeviceList(deviceList, animal)
                 }
+
                 override fun onCancelled(error: DatabaseError) {
                     Log.w(TAG, "loadQuestion:onCancelled", error.toException())
                 }
@@ -94,7 +93,20 @@ class AnimalActivity : FragmentActivity(), AnimalFragmentTabOverview.OnFragmentI
             "elephants" -> animal_image.setImageDrawable(getDrawable(R.drawable.ic_icon_elephant))
             "baboons" -> animal_image.setImageDrawable(getDrawable(R.drawable.ic_icon_monkey))
             "giraffes" -> animal_image.setImageDrawable(getDrawable(R.drawable.ic_icon_giraffe))
+        }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart:")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume:")
+        if (deviceList.size != 0) {
+            Log.d(TAG, "onResume:list not null")
+            overview.changeDeviceList(deviceList, animal)
         }
     }
 

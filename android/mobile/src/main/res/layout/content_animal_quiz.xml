@@ -36,11 +36,19 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
+            <ProgressBar
+                android:id="@+id/question_total_pb"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"/>
+
             <TextView
                 android:id="@+id/question_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:layout_gravity="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 tools:text="6" />
@@ -155,8 +163,10 @@
             android:background="@drawable/shape_round"
             android:backgroundTint="@color/colorPrimaryDark"
             android:padding="10dp"
+            android:clickable="true"
             android:text="start quiz"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:focusable="true" />
 
         <LinearLayout
             android:id="@+id/question_advice_ll"

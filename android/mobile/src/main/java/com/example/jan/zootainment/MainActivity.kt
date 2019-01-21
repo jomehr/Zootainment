@@ -23,9 +23,13 @@ import kotlinx.android.synthetic.main.content_main_list.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var auth: FirebaseAuth
+    private val auth = FirebaseAuth.getInstance()
+    private val user = auth.currentUser
+
     private lateinit var fragment: MainFragment
     private lateinit var fragmentTabList: MainFragmentTabList
+
+    private lateinit var proximityContentAdapter: ProximityContentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +37,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        auth = FirebaseAuth.getInstance()
+        //init nav bar
+        val toggle = ActionBarDrawerToggle(
+            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
 
-        if (auth.currentUser?.isAnonymous!!) {
+        //init login reminder
+        if (user!!.isAnonymous) {
             content_main_status.visibility = View.VISIBLE
             content_main_login.setOnClickListener {
                 startActivity(Intent(this@MainActivity, Registration::class.java))
@@ -43,24 +53,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-
+        //init fragments
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
         fragment = MainFragment()
         fragmentTabList = MainFragmentTabList()
 
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
 
+        //check requirements for bluetooth and location
         RequirementsWizardFactory
             .createEstimoteRequirementsWizard()
             .fulfillRequirements(this,
                 {
                     Log.d(TAG, "requirements fulfilled")
-                    fragmentTransaction.add(R.id.fragment_container, fragmentTabList).commit()
+                    fragmentTransaction.replace(R.id.fragment_container, fragmentTabList).commit()
                 },
                 { requirements ->
                     Log.e(TAG, "requirements missing: $requirements")
@@ -72,9 +78,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
+    //callback to update adapter
     fun setNearbyContent(nearbyContent: List<ProximityContent>) {
-        Log.d(TAG, "setting content: activity")
-        val proximityContentAdapter = ProximityContentAdapter(this)
+        proximityContentAdapter = ProximityContentAdapter(this)
 
         val gridView = fragmentTabList.gridView
         gridView.adapter = proximityContentAdapter
@@ -83,86 +89,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         proximityContentAdapter.notifyDataSetChanged()
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart: ")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy: stopping proximityContentManager")
-
-    }
-
-    override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here.
-        return when (item.itemId) {
-            R.id.dev_cannonControl -> {
-                val intent = Intent(this@MainActivity, Controller::class.java)
-                intent.putExtra("animal", "elephants")
-                startActivity(intent)
-                true
-            }
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation drawer item clicks here.
-        when (item.itemId) {
-            R.id.nav_profile -> {
-
-            }
-            R.id.nav_events -> {
-
-            }
-            R.id.nav_settings -> {
-
-            }
-            R.id.nav_logout -> {
-                //check if user is anonymous, if true ask to upgrade account to save data
-                if (auth.currentUser?.isAnonymous!!) {
-                    Log.d(TAG, "user is anonymous: ${auth.currentUser?.uid}")
-                    convertAnonAccount()
-                }else {
-                    Log.d(TAG, "user is not anon")
-                    auth.signOut()
-                    startActivity(Intent(this@MainActivity, Login::class.java))
-                    finish()
-                }
-            }
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
+    //give option to upgrade to permanent account or delete anon permanently before log out
     private fun convertAnonAccount(): Boolean {
-         AlertDialog.Builder(this@MainActivity)
+        AlertDialog.Builder(this@MainActivity)
             .setTitle("Warning")
             .setMessage("If you log out as an anonymous Account you will lose all data (progress, vouchers, etc). Do you want to convert to a permanent account?")
             .setCancelable(false)
             .setPositiveButton("Yes") {dialog, id ->
+                dialog.cancel()
                 startActivity(Intent(this@MainActivity, Registration::class.java))
-                dialog.dismiss()
+                finish()
             }
             .setNegativeButton("No") { dialog, id ->
-                auth.currentUser!!.delete().addOnCompleteListener(this) { task ->
+                user!!.delete().addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "deleteAnon:success")
                         dialog.cancel()
@@ -175,6 +114,61 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
             .show()
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    // Inflate the menu; this adds items to the action bar if it is present.
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    // Handle action bar item clicks here.
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.dev_cannonControl -> {
+                val intent = Intent(this@MainActivity, Controller::class.java)
+                intent.putExtra("animal", "elephants")
+                intent.putExtra("device", "cannon_1")
+                startActivity(intent)
+                true
+            }
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    // Handle navigation drawer item clicks here.
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_profile -> {
+            }
+            R.id.nav_events -> {
+            }
+            R.id.nav_settings -> {
+            }
+            R.id.nav_logout -> {
+                //check if user is anonymous, if true ask to upgrade account to save data
+                if (user!!.isAnonymous) {
+                    Log.d(TAG, "user is anonymous: ${auth.currentUser?.uid}")
+                    convertAnonAccount()
+                }else {
+                    Log.d(TAG, "user is not anon")
+                    auth.signOut()
+                    startActivity(Intent(this@MainActivity, Login::class.java))
+                    finish()
+                }
+            }
+        }
+        drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 

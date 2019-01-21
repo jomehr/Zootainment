@@ -9,17 +9,15 @@ import android.view.ViewGroup
 import android.widget.GridView
 import com.example.jan.zootainment.R
 import com.example.jan.zootainment.adapter.ProximityContentAdapter
-import com.example.jan.zootainment.data.ProximityContent
 import com.example.jan.zootainment.util.ProximityContentManager
 
 class MainFragmentTabList : Fragment() {
 
-    var proximityContentAdapter: ProximityContentAdapter? = null
+    private var proximityContentAdapter: ProximityContentAdapter? = null
     private var proximityContentManager: ProximityContentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         Log.d(TAG, ":onCreate")
     }
 
@@ -30,7 +28,6 @@ class MainFragmentTabList : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         Log.d(TAG, ":onCreateView")
         val rootView: View = inflater.inflate(R.layout.content_main_list, container, false)
 
@@ -49,13 +46,6 @@ class MainFragmentTabList : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         proximityContentManager?.stop()
-    }
-
-    fun setNearbyContent(nearbyContent: List<ProximityContent>) {
-        Log.d(TAG, "setting content: $nearbyContent")
-
-        proximityContentAdapter!!.setNearbyContent(nearbyContent)
-        proximityContentAdapter!!.notifyDataSetChanged()
     }
 
     private fun startProximityContentManager() {

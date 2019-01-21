@@ -29,8 +29,6 @@ class PointCounter : Fragment() {
     private lateinit var points: TextView
     private lateinit var mListener: OnPointsCounterListener
 
-    //private lateinit var userPointsRef: DatabaseReference
-
     private val user = FirebaseAuth.getInstance().currentUser?.uid!!
     private val firebase = FirebaseDatabase.getInstance().reference.child("users").child(user).child("points")
 
@@ -40,15 +38,13 @@ class PointCounter : Fragment() {
 
         rootview = inflater.inflate(R.layout.content_point_counter, container, false)
 
-        //userPointsRef = firebase.child("users").child(user).child("points")
-
         points = rootview.findViewById(R.id.counter_points)
         points.text = "0"
 
         return rootview
     }
 
-    fun startCounterDown(total: Int, points: Int, animal: String) {
+    fun startCounterDown(total: Int, points: Int, animal: String, device: String) {
         valueAnimator = ValueAnimator()
         val countView =  view?.findViewById<TextView>(R.id.counter_points)
         val result = total-points
@@ -68,10 +64,10 @@ class PointCounter : Fragment() {
             }
 
             override fun onAnimationEnd(animation: Animator?) {
-                //countView?.setTextColor(ContextCompat.getColor(context!!, R.color.colorPrimary))
                 firebase.setValue(result)
                 val intent = Intent(activity, Controller::class.java)
                 intent.putExtra("animal", animal)
+                intent.putExtra("device", device)
                 startActivity(intent)
                 activity?.finish()
             }
@@ -115,8 +111,8 @@ class PointCounter : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
-        if (context is OnPointsCounterListener) mListener = context
-        else throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+        /*if (context is OnPointsCounterListener) mListener = context
+        else throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")*/
 
         if (parentFragment is OnPointsCounterListener) mListener = parentFragment as OnPointsCounterListener
         else throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")

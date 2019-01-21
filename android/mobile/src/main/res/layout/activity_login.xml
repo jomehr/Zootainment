@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/login_title"
         android:text="Zootainment"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="40sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:layout_marginTop="20dp"
@@ -17,13 +18,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/login_anonButton"
         android:text="Log in anonymously"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/shape_round"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:padding="10dp"
         android:layout_margin="30dp"
         app:layout_constraintTop_toBottomOf="@+id/login_title"
@@ -37,7 +39,7 @@
         android:text="or with email"
         android:textSize="20sp"
         android:textColor="@color/black"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintTop_toBottomOf="@+id/login_anonButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -71,13 +73,14 @@
         android:inputType="textPassword" />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/login_loginButton"
         android:text="Log in"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/shape_round"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:padding="10dp"
         android:layout_margin="30dp"
         app:layout_constraintTop_toBottomOf="@+id/login_passwordEdit"

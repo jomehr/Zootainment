@@ -14,38 +14,81 @@ import com.example.jan.zootainment.AnimalActivity
 import com.example.jan.zootainment.MainActivity
 import com.example.jan.zootainment.MyApplication
 import com.example.jan.zootainment.R
+import com.example.jan.zootainment.data.ProgressOverview
 import com.example.jan.zootainment.data.ProximityContent
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ProximityContentManager(private val context: Context) {
 
     private var proximityObserverHandler: ProximityObserver.Handler? = null
+    private var dateMillis: Long = 0
+
+    private lateinit var progressReference: DatabaseReference
+    private lateinit var progressOverviewReference: DatabaseReference
+
+    private val user = FirebaseAuth.getInstance().currentUser?.uid!!
+    private val firebase = FirebaseDatabase.getInstance().reference.child("users").child(user)
 
     fun start() {
 
-        Log.d(TAG, context.toString())
-        val proximityObserver = ProximityObserverBuilder(context, (context.applicationContext as MyApplication).cloudCredentials)
-            .withTelemetryReportingDisabled()
-            .withEstimoteSecureMonitoringDisabled()
-            .onError { throwable ->
-                Log.d(TAG, "proximity observer error: $throwable")
-            }
-            .withBalancedPowerMode()
-            .build()
+        val proximityObserver =
+            ProximityObserverBuilder(context, (context.applicationContext as MyApplication).cloudCredentials)
+                .withTelemetryReportingDisabled()
+                .withEstimoteSecureMonitoringDisabled()
+                .withAnalyticsReportingDisabled()
+                .onError { throwable ->
+                    Log.d(TAG, "proximity observer error: $throwable")
+                }
+                .withBalancedPowerMode()
+                .build()
 
         val observer = ProximityZoneBuilder()
             .forTag("zootainment-6gm")
             .inCustomRange(9.0)
             .onContextChange { contexts ->
                 val nearbyContent = ArrayList<ProximityContent>(contexts.size)
-                Log.d(TAG, "${contexts.size}")
+                Log.d(TAG, "count: ${contexts.size}")
 
+                dateMillis = Date().time
+                Log.d(TAG, "Time: $dateMillis")
                 for (data in contexts) {
-                    Log.d(TAG, "attachment: ${data.attachments}")
                     val animal: String = data.attachments["animal"] ?: "unknown"
-                    val questions = "x"
-                    nearbyContent.add(ProximityContent(animal, questions))
+
+                    progressReference = firebase.child(animal)
+                    progressOverviewReference = progressReference.child("overview")
+
+                    progressOverviewReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            Log.w(TAG, "loadProgress:onCancelled", databaseError.toException())
+                        }
+
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val questions: Int?
+                            if (dataSnapshot.exists()) {
+                                val progressData = dataSnapshot.getValue(ProgressOverview::class.java)
+                                val timeDif = (((((dateMillis / 1000) - progressData?.timer!!) / 60) / 60) / 24).toDouble()
+                                Log.d(TAG, "timer: " + timeDif.toString())
+                                if (timeDif <= 1) {
+                                    questions = progressData.counter
+                                    nearbyContent.add(ProximityContent(animal, questions!!))
+                                } else {
+                                    Log.d(TAG, "older then 24h")
+                                    questions = 0
+                                    nearbyContent.add(ProximityContent(animal, questions))
+                                    progressReference.removeValue()
+                                }
+                            } else {
+                                questions = 0
+                                nearbyContent.add(ProximityContent(animal, questions))
+                            }
+                            (context as MainActivity).setNearbyContent(nearbyContent)
+                        }
+                    })
+                    Log.d(TAG, "attachment: ${data.attachments}")
                 }
-                (context as MainActivity).setNearbyContent(nearbyContent)
             }
             .build()
 
@@ -63,7 +106,7 @@ class ProximityContentManager(private val context: Context) {
                     }
 
                     val notification = NotificationCompat.Builder(context, "animal_close")
-                        .setSmallIcon(R.drawable.ic_image_default)
+                        .setSmallIcon(R.mipmap.logo_round)
                         .setContentTitle("$nearbyAnimal enclosure")
                         .setContentText("There is a quiz and feeding cannon available")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
