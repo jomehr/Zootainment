@@ -12,11 +12,12 @@ GPIO.setup(servo,GPIO.OUT)
 
 p=GPIO.PWM(servo,50)
 
+#removed login keys
 config = {
-  "apiKey": "AAAANy-Mmdo:APA91bGOKuaMgdvtaT3HghLheCX6Q92udrby-l9n7fjdxICUvl5hwUuN573WdqCUutCAI74ePTTaF5GodiOIZnbNQNaTn_LmnSqvcbppBB5P9O3XjEfemrvU94GAGCFfxTwZQqUW3J7x",
-  "authDomain": "zootainment-41365.firebaseapp.com",
-  "databaseURL": "https://zootainment-41365.firebaseio.com/",
-  "storageBucket": "zootainment-41365.appspot.com"
+  "apiKey": "xxxx",
+  "authDomain": "xxxx",
+  "databaseURL": "xxxx",
+  "storageBucket": "xxxx"
 }
 
 firebase = pyrebase.initialize_app(config)
