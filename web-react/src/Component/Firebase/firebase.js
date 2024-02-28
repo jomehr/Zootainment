@@ -2,11 +2,10 @@ import app from 'firebase/app';
 import "firebase/database"
 
 // Initialize Firebase
-//TODO put config data in .env-file if repository goes public
 let config = {
-    apiKey: "AIzaSyAGI4vn6fOQ_HPwMdkvCVR8X6LK5tAA1tk",
-    authDomain: "zootainment-41365.firebaseapp.com",
-    databaseURL: "https://zootainment-41365.firebaseio.com",
+    apiKey: "xxxx",
+    authDomain: "xxxx",
+    databaseURL: "xxxx",
 };
 
 class Firebase {
